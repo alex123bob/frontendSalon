@@ -1,0 +1,29 @@
+{
+  "name": "frontend-salon",
+  "version": "1.0.0",
+  "description": "This project is temporarily providing demonstration of cutting-edge front-end skill or deep anatomy of relevant points.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alex123bob/frontendSalon.git"
+  },
+  "keywords": [
+    "session",
+    "share"
+  ],
+  "author": "Alexander Li",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alex123bob/frontendSalon/issues"
+  },
+  "homepage": "https://github.com/alex123bob/frontendSalon#readme",
+  "dependencies": {
+    "gulp": "^3.9.1",
+    "gulp-clean": "^0.3.2",
+    "gulp-concat": "^2.6.0",
+    "gulp-uglify": "^2.0.0"
+  }
+}
