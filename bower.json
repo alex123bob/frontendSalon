@@ -1,0 +1,25 @@
+{
+  "name": "frontend-salon",
+  "description": "This project is temporarily providing demonstration of cutting-edge front-end skill or deep anatomy of relevant points.",
+  "main": "index.js",
+  "authors": [
+    "Alexander Li"
+  ],
+  "license": "ISC",
+  "keywords": [
+    "session",
+    "share"
+  ],
+  "homepage": "https://github.com/alex123bob/frontendSalon",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "angularjs#^1.5.8",
+    "jquery": "^3.1.1"
+  }
+}
