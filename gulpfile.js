@@ -11,21 +11,28 @@ gulp.task('cleanForStepOne', function () {
         .pipe(clean());
 });
 
-gulp.task('compressForStepOne', function () {
-    return gulp.src([
-        'bower_components/jquery/dist/jquery.js',
-        'bower_components/angular/angular.js'
-    ])
+gulp.task('compressJsForStepOne', function () {
+    return gulp.src(
+        [
+            'bower_components/jquery/jquery.js',
+            'bower_components/angular/angular.js',
+            'libs/foundation.js'
+        ]
+    )
         .pipe(uglify())
         .pipe(concat('all.min.' + rd + '.js'))
         .pipe(gulp.dest('build/step1/'));
 });
 
-gulp.task('step1', ['cleanForStepOne', 'compressForStepOne'], function () {
+gulp.task('step1', ['cleanForStepOne', 'compressJsForStepOne'], function () {
     // replace html js link filename
     return gulp.src('step1.html')
         .pipe(htmlreplace({
-            'js': 'all.min.' + rd + '.js'
+            'js': 'all.min.' + rd + '.js',
+            'css': {
+                'src': '../../tpl/css/foundation.min',
+                'tpl': '<link rel="stylesheet" href="%s.css">'
+            }
         }))
         .pipe(gulp.dest('build/step1/'));
 });
