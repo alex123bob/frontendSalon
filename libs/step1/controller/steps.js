@@ -17,47 +17,57 @@ angular.module('stepOne.controller.steps', [])
                 this.$$watchers.push(watcher);
             }
 
-            Scope.prototype.$digest = function () {
-                var me = this;
+            Scope.prototype.$$digest = function () {
+                var me = this,
+                    listenerInvoked = false;
                 this.$$watchers.forEach(function (watcher, index, self) {
                     var newVal = watcher.watchFunc(me),
                         oldVal = watcher.last;
                     if (newVal !== oldVal) {
                         watcher.listenerFunc(newVal, oldVal, me);
+                        listenerInvoked = true;
                         watcher.last = newVal;
                     }
                 });
+                return listenerInvoked;
             }
-            // however here comes the bug.
-            var ecoSys = new Scope();
-            ecoSys.name = 'Earth Planet';
-            ecoSys.counter = 0;
+            Scope.prototype.$digest = function (){
+                var invoked = false,
+                    ttl = 10; // short for Time To Live
+                do {
+                    invoked = this.$$digest();
+                    if (invoked && !(ttl--)) {
+                        throw "Exception: 10 digest iterations reached!";
+                    }
+                }while(invoked);
+            }
 
-            ecoSys.$watch(
+            // WHAT IF there are two watchers modifying each others' variable in listener function.
+            var testScope = new Scope();
+            testScope.counter1 = 0;
+            testScope.counter2 = 0;
+
+            testScope.$watch(
                 function (scope){
-                    return scope.counter;
+                    return scope.counter1;
                 },
                 function (newVal, oldVal, scope){
-                    scope.thirdVariable = (scope.counter === 2);
-                }
-            )
-
-            ecoSys.$watch(
-                function (scope){
-                    return scope.name;
-                },
-                function (newVal, oldVal, scope){
-                    scope.counter++;
+                    scope.counter2++;
                 }
             );
-            ecoSys.$digest();
-            console.log(ecoSys.counter === 1);
-            ecoSys.name = 'Mercury';
-            ecoSys.$digest();
-            console.log(ecoSys.counter === 2);
-            // now counter is equivalent to two, generally we expect that thirdVariable becomes true.
-            // HOWEVER
-            console.assert(ecoSys.thirdVariable === true, 'thirdVariable is not true, something goes wrong here!');
+
+            testScope.$watch(
+                function (scope){
+                    return scope.counter2;
+                },
+                function (newVal, oldVal, scope){
+                    scope.counter1++;
+                }
+            );
+
+            // This is gonna run until your browser crashes if we comment it out.
+            // testScope.$digest();
+            console.log(testScope.counter1, testScope.counter2);
 
             $scope.visualArr = [
                 {
@@ -110,6 +120,44 @@ angular.module('stepOne.controller.steps', [])
                     urls: [
                         imagePrefix + 'notNotifiedWhileDigesting.jpeg',
                         imagePrefix + 'notNotifiedConsoleOutput.jpeg'
+                    ]
+                },
+                {
+                    title: 'Idempotent: Make A Little Adjustments',
+                    content: '$digest now runs all watches at least once. \
+                                If, on the first pass, any of the watched values has changed, \
+                                the pass is marked dirty, and all watches are run for a second time. \
+                                This goes on until there\'s a full pass where none of the watched values \
+                                has changed and the situation is deemed stable.<br />\
+                                We can now make another important realization about Angular watches: \
+                                They may be run many times per each digest pass. \
+                                This is why people often say watches should be idempotent: \
+                                A watch should have no side effects, \
+                                or only side effects that can happen any number of times. \
+                                If, for example, a watch function fires an Ajax request, \
+                                there are no guarantees about how many requests your app is making.',
+                    urls: [
+                        imagePrefix + 'idempotent.jpeg',
+                        imagePrefix + 'idempotentConsoleOutput.jpeg'
+                    ]
+                },
+                {
+                    title: 'Glaring ERROR',
+                    content: 'What happens if there are two watches looking at changes made by each other? \
+                                That is, what if the state never stabilizes? Such a situation is shown in the code below. \
+                                In the example the $digest call is commented out. \
+                                Uncomment it will see the spin always stay there. SOOOOOOOOO SAD!😔<br />\
+                                I just made a BOO-BOO!',
+                    urls: [
+                        imagePrefix + 'glaringOmission.jpeg'
+                    ]
+                },
+                {
+                    title: 'Time To Live',
+                    content: '',
+                    urls: [
+                        imagePrefix + 'ttl.jpeg',
+                        imagePrefix + 'ttlConsoleOutput.jpeg'
                     ]
                 }
             ];
