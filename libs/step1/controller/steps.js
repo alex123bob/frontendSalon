@@ -18,21 +18,41 @@ angular.module('stepOne.controller.steps', [])
             }
 
             Scope.prototype.$digest = function () {
+                var me = this;
                 this.$$watchers.forEach(function (watcher, index, self) {
-                    watcher.listenerFunc();
+                    var newVal = watcher.watchFunc(me),
+                        oldVal = watcher.last;
+                    if (newVal !== oldVal) {
+                        watcher.listenerFunc(newVal, oldVal, me);
+                        watcher.last = newVal;
+                    }
                 });
             }
             // let's have a try
-            var scope = new Scope();
-            scope.$watch(
-                function () {
-                    console.log('this is watch Function. currently we have nothing special to do.');
+            var fruit = new Scope();
+            fruit.name = 'Apple';
+            fruit.counter = 0; // counter is to record how many times we have changed the name;
+            fruit.$watch(
+                function (scope){
+                    return scope.name;
                 },
-                function () {
-                    console.log('hey, I am listener function for every watcher. I am triggered. YAY! 😄');
+                function (newVal, oldVal, scope){
+                    scope.counter++;
                 }
-            )
-            scope.$digest();
+            );
+            // before everything starts, counter is equivalent to zero
+            console.assert(fruit.counter === 0, 'oops, it is apparently not zero');
+            // we digest it. see what happens.
+            fruit.$digest();
+            console.assert(fruit.counter === 1, 'it\'s not one, what ?');
+            // what if we digest again.
+            fruit.$digest();
+            console.assert(fruit.counter === 2, 'counter is not equal to two, the value returned by watch must have not been changed.');
+            // now we change the fruit name.
+            fruit.name = 'Tangerine'; // don't judge me on choosing tangerine, coz it's autumn, tangerine is the great fruit.😄
+            fruit.$digest();
+            console.assert(fruit.counter === 2, 'assertion failed!');
+
 
             $scope.visualArr = [
                 {
@@ -62,6 +82,16 @@ angular.module('stepOne.controller.steps', [])
                     urls: [
                         imagePrefix + 'watchTest.jpeg',
                         imagePrefix + 'consoleTestResult.jpeg'
+                    ]
+                },
+                {
+                    title: 'Test with Dirty Check',
+                    content: 'Watch function of a watcher should return the piece \
+                                of data whose changes we are interested in. \
+                                Usually that piece of data is something that exists on the scope.',
+                    urls: [
+                        imagePrefix + 'tryWatchWithDirtyCheck.jpeg',
+                        imagePrefix + 'watchFuncConsoleOutput.jpeg'
                     ]
                 }
             ];
