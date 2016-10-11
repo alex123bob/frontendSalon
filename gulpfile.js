@@ -16,7 +16,9 @@ gulp.task('compressJsForStepOne', function () {
         [
             'bower_components/jquery/jquery.js',
             'bower_components/angular/angular.js',
-            'libs/foundation.js'
+            'libs/foundation.js',
+            'libs/step1/controller/*.js',
+            'libs/step1/directive/*.js'
         ]
     )
         .pipe(uglify())
