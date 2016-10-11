@@ -11,7 +11,7 @@ angular.module('stepOne.controller.steps', [])
             Scope.prototype.$watch = function (watchFunc, listenerFunc) {
                 var watcher = {
                     watchFunc: watchFunc,
-                    listenerFunc: listenerFunc
+                    listenerFunc: listenerFunc || function (){}
                 };
 
                 this.$$watchers.push(watcher);
@@ -28,11 +28,21 @@ angular.module('stepOne.controller.steps', [])
                     }
                 });
             }
-            // let's have a try
-            var fruit = new Scope();
-            fruit.name = 'Apple';
-            fruit.counter = 0; // counter is to record how many times we have changed the name;
-            fruit.$watch(
+            // however here comes the bug.
+            var ecoSys = new Scope();
+            ecoSys.name = 'Earth Planet';
+            ecoSys.counter = 0;
+
+            ecoSys.$watch(
+                function (scope){
+                    return scope.counter;
+                },
+                function (newVal, oldVal, scope){
+                    scope.thirdVariable = (scope.counter === 2);
+                }
+            )
+
+            ecoSys.$watch(
                 function (scope){
                     return scope.name;
                 },
@@ -40,19 +50,14 @@ angular.module('stepOne.controller.steps', [])
                     scope.counter++;
                 }
             );
-            // before everything starts, counter is equivalent to zero
-            console.assert(fruit.counter === 0, 'oops, it is apparently not zero');
-            // we digest it. see what happens.
-            fruit.$digest();
-            console.assert(fruit.counter === 1, 'it\'s not one, what ?');
-            // what if we digest again.
-            fruit.$digest();
-            console.assert(fruit.counter === 2, 'counter is not equal to two, the value returned by watch must have not been changed.');
-            // now we change the fruit name.
-            fruit.name = 'Tangerine'; // don't judge me on choosing tangerine, coz it's autumn, tangerine is the great fruit.😄
-            fruit.$digest();
-            console.assert(fruit.counter === 2, 'assertion failed!');
-
+            ecoSys.$digest();
+            console.log(ecoSys.counter === 1);
+            ecoSys.name = 'Mercury';
+            ecoSys.$digest();
+            console.log(ecoSys.counter === 2);
+            // now counter is equivalent to two, generally we expect that thirdVariable becomes true.
+            // HOWEVER
+            console.assert(ecoSys.thirdVariable === true, 'thirdVariable is not true, something goes wrong here!');
 
             $scope.visualArr = [
                 {
@@ -92,6 +97,19 @@ angular.module('stepOne.controller.steps', [])
                     urls: [
                         imagePrefix + 'tryWatchWithDirtyCheck.jpeg',
                         imagePrefix + 'watchFuncConsoleOutput.jpeg'
+                    ]
+                },
+                {
+                    title: 'Pitfall of This Mechanism',
+                    content: 'The core of the implementation is now there, \
+                                but we\'re still far from done. For instance, \
+                                there\'s a fairly typical scenario we\'re not supporting yet: \
+                                The listener functions themselves may also change properties on the scope. \
+                                If this happens, and there\'s another watcher looking at the property that just changed, \
+                                it might not notice the change during the same digest pass:',
+                    urls: [
+                        imagePrefix + 'notNotifiedWhileDigesting.jpeg',
+                        imagePrefix + 'notNotifiedConsoleOutput.jpeg'
                     ]
                 }
             ];
