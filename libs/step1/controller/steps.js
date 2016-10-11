@@ -1,14 +1,14 @@
 angular.module('stepOne.controller.steps', [])
     .controller('steps', [
         '$scope',
-        function ($scope, $elem){
+        function ($scope, $elem) {
             var imagePrefix = './resources/img/'
-            
-            function Scope(){
+
+            function Scope() {
                 this.$$watchers = [];
             }
 
-            Scope.prototype.$watch = function (watchFunc, listenerFunc){
+            Scope.prototype.$watch = function (watchFunc, listenerFunc) {
                 var watcher = {
                     watchFunc: watchFunc,
                     listenerFunc: listenerFunc
@@ -17,11 +17,22 @@ angular.module('stepOne.controller.steps', [])
                 this.$$watchers.push(watcher);
             }
 
-            Scope.prototype.$digest = function (){
-                this.$$watchers.forEach(function (watcher, index, self){
+            Scope.prototype.$digest = function () {
+                this.$$watchers.forEach(function (watcher, index, self) {
                     watcher.listenerFunc();
                 });
             }
+            // let's have a try
+            var scope = new Scope();
+            scope.$watch(
+                function () {
+                    console.log('this is watch Function. currently we have nothing special to do.');
+                },
+                function () {
+                    console.log('hey, I am listener function for every watcher. I am triggered. YAY! 😄');
+                }
+            )
+            scope.$digest();
 
             $scope.visualArr = [
                 {
@@ -31,7 +42,7 @@ angular.module('stepOne.controller.steps', [])
                                 would on any other object. Scopes are created using \
                                 the Scope constructor. \
                                 <br />Let\'s make the simplest possible version of it:',
-                    url: imagePrefix + 'createScopeClass.jpeg'
+                    urls: [imagePrefix + 'createScopeClass.jpeg']
                 },
                 {
                     title: 'Watching Object Properties: $watch And $digest',
@@ -43,7 +54,15 @@ angular.module('stepOne.controller.steps', [])
                                 You create a watcher by providing two functions to $watch:<br /> \
                                 A watch function, which specifies the piece of data you\'re interested in.<br />\
                                 A listener function which will be called whenever that data changes.',
-                    url: imagePrefix + 'watchAndListener.jpeg'
+                    urls: [imagePrefix + 'watchAndListener.jpeg']
+                },
+                {
+                    title: 'Test with $watch Function',
+                    content: 'Let\'s have a try:',
+                    urls: [
+                        imagePrefix + 'watchTest.jpeg',
+                        imagePrefix + 'consoleTestResult.jpeg'
+                    ]
                 }
             ];
         }

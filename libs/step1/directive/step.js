@@ -8,8 +8,10 @@ angular.module('stepOne.directive.step', [])
                 // transclude: true,
                 template: '<div class="blog-post">'
                 + '<h3 style="cursor: pointer;"><small ng-show="footnote">{{footnote}}</small>.{{title}}</h3>'
-                + '<img ng-show="show" class="thumbnail" ng-src="{{screencapture}}" />'
                 + '<p ng-show="show" ng-bind-html="content"></p>'
+                + '<div ng-repeat="url in screencapture">'
+                    + '<img ng-show="show" class="thumbnail" ng-src="{{url}}" />'
+                + '</div>'
                 + '</div>',
                 scope: {
                     'title': '=',
