@@ -7,7 +7,12 @@ var gulp = require('gulp'),
     rd = Date.now();
 
 gulp.task('cleanForStepOne', function () {
-    return gulp.src('build/step1/*.js')
+    return gulp.src(
+        [
+            'build/step1/*.js',
+            'build/step1/resources/img/*'
+        ]
+    )
         .pipe(clean());
 });
 
@@ -26,7 +31,12 @@ gulp.task('compressJsForStepOne', function () {
         .pipe(gulp.dest('build/step1/'));
 });
 
-gulp.task('step1', ['cleanForStepOne', 'compressJsForStepOne'], function () {
+gulp.task('moveResourcesForStepOne', function (){
+    return gulp.src('resources/img/*')
+            .pipe(gulp.dest('build/step1/resources/img/'));
+});
+
+gulp.task('step1', ['cleanForStepOne', 'compressJsForStepOne', 'moveResourcesForStepOne'], function () {
     // replace html js link filename
     return gulp.src('step1.html')
         .pipe(htmlreplace({
