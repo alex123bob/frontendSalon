@@ -3,7 +3,7 @@ angular.module('stepOne.controller.steps', [])
         '$scope',
         function ($scope, $elem) {
             var imagePrefix = './resources/img/',
-                accordionMode = false;
+                accordionMode = true;
 
             function Scope() {
                 this.$$watchers = [];

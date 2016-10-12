@@ -34,6 +34,11 @@ angular.module('stepOne.directive.step', [])
                             $scope.show = false;
                             $scope.$digest();
                         }
+                        else {
+                            angular.element('html,body').animate({
+                                scrollTop: $elem.offset().top
+                            }, 'slow');
+                        }
                     });
                 }
             }
