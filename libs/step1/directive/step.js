@@ -25,7 +25,15 @@ angular.module('stepOne.directive.step', [])
                     $scope.content = $sce.trustAsHtml($scope.content);
                     $elem.on('click', 'h3', function (ev) {
                         $scope.show = !$scope.show;
+                        $scope.show && $scope.$emit('collapseOthers', $scope.footnote);
                         $scope.$digest();
+                    });
+                    
+                    $scope.$on('collapseExcept', function (ev, indexExcepted){
+                        if ($scope.footnote != indexExcepted) {
+                            $scope.show = false;
+                            $scope.$digest();
+                        }
                     });
                 }
             }
