@@ -6,7 +6,7 @@ angular.module('stepOne.directive.step', [])
                 restrict: 'E',
                 replace: true,
                 // transclude: true,
-                template: '<div class="blog-post">'
+                template: '<div class="blog-post" name="{{footnote}}">'
                 + '<h3 style="cursor: pointer;"><small ng-show="footnote">{{footnote}}</small>.{{title}}</h3>'
                 + '<p ng-show="show" ng-bind-html="content"></p>'
                 + '<div ng-repeat="url in screencapture">'
