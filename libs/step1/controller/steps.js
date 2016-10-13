@@ -129,7 +129,7 @@ angular.module('stepOne.controller.steps', [])
                                 of data whose changes we are interested in. \
                                 Usually that piece of data is something that exists on the scope.',
                     urls: [
-                        imagePrefix + 'tryWatchWithDirtyCheck.jpeg',
+                        imagePrefix + 'tryWatchWithDirtyCheck.png',
                         imagePrefix + 'watchFuncConsoleOutput.jpeg'
                     ]
                 },
