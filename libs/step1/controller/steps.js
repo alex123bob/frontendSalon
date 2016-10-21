@@ -201,7 +201,7 @@ angular.module('stepOne.controller.steps', [])
                                 we also need to change the way we store the old value for each watcher. \
                                 It isn\'t enough to just store a reference to the current value, \
                                 because any changes made within that value will also be applied to the reference we\'re holding. \
-                                We would never notice any changes since essentially $$areEqual would always get \
+                                We would never notice any changes since essentially $$isEqual would always get \
                                 two references to the same value. \
                                 For this reason we need to make a deep copy of the value and store that instead.',
                     urls: [
